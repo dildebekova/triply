@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,14 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.triply.R
 import com.example.triply.TriplyApplication
 import com.example.triply.data.local.Trip
 import com.example.triply.ui.theme.PinkPrimary
 import com.example.triply.ui.theme.PinkSecondary
+import com.example.triply.ui.theme.PinkTertiary
 import com.example.triply.ui.viewmodels.MyTripsViewModel
 import com.example.triply.ui.viewmodels.MyTripsViewModelFactory
 import kotlinx.coroutines.launch
@@ -43,9 +47,11 @@ fun MyTripsScreen(
     val repository = (context.applicationContext as TriplyApplication).repository
     val viewModel: MyTripsViewModel = viewModel(factory = MyTripsViewModelFactory(repository))
     val trips by viewModel.tripsState.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
     val scope = rememberCoroutineScope()
 
     Scaffold(
+        modifier = modifier,
         containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
             FloatingActionButton(
@@ -54,7 +60,7 @@ fun MyTripsScreen(
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Trip")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_trip))
             }
         }
     ) { innerPadding ->
@@ -63,8 +69,10 @@ fun MyTripsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Feminine Header
-            HeaderSection()
+            HeaderWithSearch(
+                query = searchQuery,
+                onQueryChange = { viewModel.updateSearchQuery(it) }
+            )
 
             if (trips.isEmpty()) {
                 Box(
@@ -72,9 +80,10 @@ fun MyTripsScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Start your adventure by tapping +",
-                        color = PinkPrimary.copy(alpha = 0.6f),
-                        fontSize = 18.sp
+                        text = if (searchQuery.isEmpty()) stringResource(R.string.empty_trips_hint) else stringResource(R.string.no_trips_found, searchQuery),
+                        color = Color.Gray,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(horizontal = 32.dp)
                     )
                 }
             } else {
@@ -84,19 +93,14 @@ fun MyTripsScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(trips, key = { it.id }) { trip ->
-                        AnimatedVisibility(
-                            visible = true,
-                            enter = fadeIn() + expandVertically(),
-                            exit = fadeOut() + shrinkVertically()
-                        ) {
-                            TripItem(
-                                trip = trip,
-                                onClick = { onTripClick(trip.id) },
-                                onDelete = {
-                                    scope.launch { viewModel.deleteTrip(trip) }
-                                }
-                            )
-                        }
+                        TripItem(
+                            trip = trip,
+                            status = viewModel.getDaysUntil(trip.startDate),
+                            onClick = { onTripClick(trip.id) },
+                            onDelete = {
+                                scope.launch { viewModel.deleteTrip(trip) }
+                            }
+                        )
                     }
                 }
             }
@@ -104,8 +108,9 @@ fun MyTripsScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeaderSection() {
+fun HeaderWithSearch(query: String, onQueryChange: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,7 +119,7 @@ fun HeaderSection() {
                     colors = listOf(PinkSecondary.copy(alpha = 0.3f), Color.Transparent)
                 )
             )
-            .padding(horizontal = 24.dp, vertical = 32.dp)
+            .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
         Text(
             text = "Triply",
@@ -124,10 +129,28 @@ fun HeaderSection() {
             letterSpacing = 2.sp
         )
         Text(
-            text = "Manage your dream trips",
-            style = MaterialTheme.typography.bodyLarge,
+            text = stringResource(R.string.dream_adventures),
+            style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray,
-            fontWeight = FontWeight.Medium
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        OutlinedTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp)),
+            placeholder = { Text(stringResource(R.string.search_trips_placeholder), color = Color.LightGray) },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = PinkPrimary) },
+            shape = RoundedCornerShape(20.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = PinkPrimary,
+                unfocusedBorderColor = PinkTertiary,
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
+            ),
+            singleLine = true
         )
     }
 }
@@ -135,10 +158,11 @@ fun HeaderSection() {
 @Composable
 fun TripItem(
     trip: Trip,
+    status: String,
     onClick: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("dd MMM", Locale("ru"))
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,7 +178,6 @@ fun TripItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Pink Date Box
             Box(
                 modifier = Modifier
                     .size(60.dp)
@@ -162,25 +185,51 @@ fun TripItem(
                     .background(PinkSecondary.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = dateFormat.format(Date(trip.startDate)),
-                        color = PinkPrimary,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                Text(
+                    text = dateFormat.format(Date(trip.startDate)),
+                    color = PinkPrimary,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = trip.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = trip.title,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.DarkGray,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    
+                    val translatedStatus = when {
+                        status.contains("today") -> "сегодня"
+                        status.contains("Left") -> status.replace("Left", "осталось")
+                            .replace("days", "дн.")
+                            .replace("day", "дн.")
+                        status.contains("ago") -> status.replace("ago", "назад")
+                            .replace("days", "дн.")
+                            .replace("day", "дн.")
+                        else -> status
+                    }
+
+                    Surface(
+                        color = if (status.contains("today")) PinkPrimary else PinkTertiary.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = translatedStatus,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (status.contains("today")) Color.White else PinkPrimary
+                        )
+                    }
+                }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Default.LocationOn,
@@ -199,7 +248,7 @@ fun TripItem(
             IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.delete),
                     tint = PinkSecondary
                 )
             }

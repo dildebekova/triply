@@ -15,3 +15,11 @@ val PinkSecondary = Color(0xFFFFC2D1)
 val PinkTertiary = Color(0xFFFFE5EC)
 val PinkBackground = Color(0xFFFFF0F3)
 val DarkGreyText = Color(0xFF4A4A4A)
+
+// Dark Mode Palette
+val PinkPrimaryDark = Color(0xFFFF4081)
+val PinkSecondaryDark = Color(0xFFF50057)
+val PinkTertiaryDark = Color(0xFF880E4F)
+val DarkBackground = Color(0xFF121212)
+val DarkSurface = Color(0xFF1E1E1E)
+val LightGreyText = Color(0xFFE0E0E0)

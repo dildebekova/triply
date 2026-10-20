@@ -11,14 +11,28 @@ private val PinkLightColorScheme = lightColorScheme(
     primary = PinkPrimary,
     onPrimary = Color.White,
     primaryContainer = PinkSecondary,
-    onPrimaryContainer = DeepPink,
+    onPrimaryContainer = Color.White,
     secondary = HotPink,
     onSecondary = Color.White,
-    tertiary = DeepPink,
+    tertiary = PinkTertiary,
     background = PinkBackground,
     surface = Color.White,
     onBackground = DarkGreyText,
     onSurface = DarkGreyText
+)
+
+private val PinkDarkColorScheme = darkColorScheme(
+    primary = PinkPrimaryDark,
+    onPrimary = Color.White,
+    primaryContainer = PinkSecondaryDark,
+    onPrimaryContainer = Color.White,
+    secondary = PinkPrimary,
+    onSecondary = Color.Black,
+    tertiary = PinkTertiaryDark,
+    background = DarkBackground,
+    surface = DarkSurface,
+    onBackground = LightGreyText,
+    onSurface = LightGreyText
 )
 
 @Composable
@@ -26,8 +40,7 @@ fun TriplyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    // We stay with a feminine theme even in dark mode for now, or we could define a darker pink
-    val colorScheme = PinkLightColorScheme
+    val colorScheme = if (darkTheme) PinkDarkColorScheme else PinkLightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

@@ -6,8 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Trip::class, Place::class, ScheduleItem::class, Expense::class, Note::class, Photo::class],
-    version = 1,
+    entities = [
+        Trip::class, 
+        Place::class, 
+        ScheduleItem::class, 
+        Expense::class, 
+        Note::class, 
+        Photo::class, 
+        PackingItem::class,
+        Document::class,
+        User::class
+    ],
+    version = 4,
     exportSchema = false
 )
 abstract class TriplyDatabase : RoomDatabase() {

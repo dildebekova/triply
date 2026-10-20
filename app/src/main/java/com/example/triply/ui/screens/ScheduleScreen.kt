@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,12 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.triply.R
 import com.example.triply.TriplyApplication
 import com.example.triply.data.local.ScheduleItem
+import com.example.triply.ui.components.FeminineTextField
 import com.example.triply.ui.theme.PinkPrimary
 import com.example.triply.ui.theme.PinkSecondary
 import com.example.triply.ui.theme.PinkTertiary
@@ -46,14 +48,15 @@ fun ScheduleScreen(
     var showAddDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                title = { Text("Trip Schedule", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.trip_schedule), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = PinkPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), tint = PinkPrimary)
                     }
                 }
             )
@@ -65,14 +68,14 @@ fun ScheduleScreen(
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Event")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_event))
             }
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
             if (schedule.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Your timeline is empty. \uD83D\uDCC5", color = Color.Gray)
+                    Text(stringResource(R.string.no_events), color = Color.Gray)
                 }
             } else {
                 LazyColumn(
@@ -106,14 +109,13 @@ fun ScheduleScreen(
 
 @Composable
 fun ScheduleItemRow(item: ScheduleItem, onDelete: () -> Unit) {
-    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-    val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+    val timeFormat = SimpleDateFormat("HH:mm", Locale("ru"))
+    val dateFormat = SimpleDateFormat("dd MMM", Locale("ru"))
     
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
-        // Time Indicator Column
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.width(60.dp)
@@ -126,7 +128,6 @@ fun ScheduleItemRow(item: ScheduleItem, onDelete: () -> Unit) {
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // Card Content
         Card(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(24.dp),
@@ -137,7 +138,7 @@ fun ScheduleItemRow(item: ScheduleItem, onDelete: () -> Unit) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(text = item.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.DarkGray)
                     IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete", tint = PinkSecondary.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
+                        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = PinkSecondary.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
                     }
                 }
                 Text(text = item.location, style = MaterialTheme.typography.bodySmall, color = PinkPrimary, fontWeight = FontWeight.Medium)
@@ -161,12 +162,12 @@ fun AddScheduleDialog(onDismiss: () -> Unit, onConfirm: (String, Long, String, S
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(28.dp),
         containerColor = Color.White,
-        title = { Text("New Event", fontWeight = FontWeight.Bold, color = PinkPrimary) },
+        title = { Text(stringResource(R.string.add_event), fontWeight = FontWeight.Bold, color = PinkPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                FeminineTextField(value = title, onValueChange = { title = it }, label = "Title", placeholder = "Flight to Rome")
-                FeminineTextField(value = location, onValueChange = { location = it }, label = "Location", placeholder = "Airport Terminal 1")
-                FeminineTextField(value = desc, onValueChange = { desc = it }, label = "Description", placeholder = "Check gate number", singleLine = false)
+                FeminineTextField(value = title, onValueChange = { title = it }, label = stringResource(R.string.event_title), placeholder = stringResource(R.string.event_placeholder))
+                FeminineTextField(value = location, onValueChange = { location = it }, label = stringResource(R.string.event_location), placeholder = stringResource(R.string.location_placeholder))
+                FeminineTextField(value = desc, onValueChange = { desc = it }, label = stringResource(R.string.description), placeholder = stringResource(R.string.note_placeholder_expense), singleLine = false)
             }
         },
         confirmButton = {
@@ -176,11 +177,11 @@ fun AddScheduleDialog(onDismiss: () -> Unit, onConfirm: (String, Long, String, S
                 colors = ButtonDefaults.buttonColors(containerColor = PinkPrimary),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Save")
+                Text(stringResource(R.string.save))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel", color = Color.Gray) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = Color.Gray) }
         }
     )
 }

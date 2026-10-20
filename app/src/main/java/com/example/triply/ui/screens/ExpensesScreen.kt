@@ -21,11 +21,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.triply.R
 import com.example.triply.TriplyApplication
 import com.example.triply.data.local.Expense
 import com.example.triply.ui.components.FeminineTextField
@@ -48,6 +50,7 @@ fun ExpensesScreen(
     val repository = (context.applicationContext as TriplyApplication).repository
     val viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModelFactory(repository, tripId))
     val expenses by viewModel.expensesState.collectAsState()
+    val currency by viewModel.currencyState.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
 
     val totalExpenses = expenses.sumOf { it.amount }
@@ -58,10 +61,10 @@ fun ExpensesScreen(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                title = { Text("Trip Expenses", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.trip_expenses), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = PinkPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), tint = PinkPrimary)
                     }
                 }
             )
@@ -73,7 +76,7 @@ fun ExpensesScreen(
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Expense")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_expense))
             }
         }
     ) { innerPadding ->
@@ -97,9 +100,9 @@ fun ExpensesScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Total Spent", color = Color.White.copy(alpha = 0.8f), fontSize = 16.sp)
+                    Text(stringResource(R.string.total_spent), color = Color.White.copy(alpha = 0.8f), fontSize = 16.sp)
                     Text(
-                        text = "$${String.format(Locale.getDefault(), "%.2f", totalExpenses)}",
+                        text = currency + String.format(Locale.getDefault(), "%.2f", totalExpenses),
                         color = Color.White,
                         fontSize = 32.sp,
                         fontWeight = FontWeight.ExtraBold
@@ -109,7 +112,7 @@ fun ExpensesScreen(
 
             if (expenses.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No expenses yet. \uD83D\uDCB8", color = Color.Gray)
+                    Text(stringResource(R.string.no_expenses), color = Color.Gray)
                 }
             } else {
                 LazyColumn(
@@ -122,7 +125,11 @@ fun ExpensesScreen(
                             visible = true,
                             enter = fadeIn() + expandVertically()
                         ) {
-                            ExpenseItemRow(expense = expense, onDelete = { viewModel.deleteExpense(expense) })
+                            ExpenseItemRow(
+                                expense = expense, 
+                                currency = currency,
+                                onDelete = { viewModel.deleteExpense(expense) }
+                            )
                         }
                     }
                 }
@@ -131,6 +138,7 @@ fun ExpensesScreen(
 
         if (showAddDialog) {
             AddExpenseDialog(
+                currencySymbol = currency,
                 onDismiss = { showAddDialog = false },
                 onConfirm = { amount, cat, desc ->
                     viewModel.addExpense(amount, cat, desc)
@@ -142,8 +150,8 @@ fun ExpensesScreen(
 }
 
 @Composable
-fun ExpenseItemRow(expense: Expense, onDelete: () -> Unit) {
-    val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+fun ExpenseItemRow(expense: Expense, currency: String, onDelete: () -> Unit) {
+    val dateFormat = SimpleDateFormat("dd MMM", Locale("ru"))
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -174,13 +182,13 @@ fun ExpenseItemRow(expense: Expense, onDelete: () -> Unit) {
             
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "$${String.format(Locale.getDefault(), "%.2f", expense.amount)}",
+                    text = currency + String.format(Locale.getDefault(), "%.2f", expense.amount),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = PinkPrimary
                 )
                 IconButton(onClick = onDelete, modifier = Modifier.size(24.dp).padding(top = 4.dp)) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = PinkSecondary, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = PinkSecondary, modifier = Modifier.size(16.dp))
                 }
             }
         }
@@ -188,7 +196,7 @@ fun ExpenseItemRow(expense: Expense, onDelete: () -> Unit) {
 }
 
 @Composable
-fun AddExpenseDialog(onDismiss: () -> Unit, onConfirm: (Double, String, String) -> Unit) {
+fun AddExpenseDialog(currencySymbol: String, onDismiss: () -> Unit, onConfirm: (Double, String, String) -> Unit) {
     var amount by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
@@ -197,12 +205,18 @@ fun AddExpenseDialog(onDismiss: () -> Unit, onConfirm: (Double, String, String) 
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(28.dp),
         containerColor = Color.White,
-        title = { Text("Add Expense", fontWeight = FontWeight.Bold, color = PinkPrimary) },
+        title = { Text(stringResource(R.string.add_expense), fontWeight = FontWeight.Bold, color = PinkPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                FeminineTextField(value = amount, onValueChange = { amount = it }, label = "Amount", placeholder = "0.00", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
-                FeminineTextField(value = category, onValueChange = { category = it }, label = "Category", placeholder = "Food, Flight, Hotel...")
-                FeminineTextField(value = desc, onValueChange = { desc = it }, label = "Note", placeholder = "Lunch at the cafe")
+                FeminineTextField(
+                    value = amount, 
+                    onValueChange = { amount = it }, 
+                    label = "Сумма ($currencySymbol)", 
+                    placeholder = "0.00", 
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                )
+                FeminineTextField(value = category, onValueChange = { category = it }, label = stringResource(R.string.category), placeholder = stringResource(R.string.category_placeholder))
+                FeminineTextField(value = desc, onValueChange = { desc = it }, label = stringResource(R.string.note), placeholder = stringResource(R.string.note_placeholder_expense))
             }
         },
         confirmButton = {
@@ -215,11 +229,11 @@ fun AddExpenseDialog(onDismiss: () -> Unit, onConfirm: (Double, String, String) 
                 colors = ButtonDefaults.buttonColors(containerColor = PinkPrimary),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Add")
+                Text(stringResource(R.string.add))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel", color = Color.Gray) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = Color.Gray) }
         }
     )
 }

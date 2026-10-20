@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.triply.data.local.Expense
 import com.example.triply.data.repository.TriplyRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class ExpensesViewModel(private val repository: TriplyRepository, private val tripId: Long) : ViewModel() {
@@ -16,6 +14,14 @@ class ExpensesViewModel(private val repository: TriplyRepository, private val tr
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
+        )
+
+    val currencyState: StateFlow<String> = repository.getUserStream()
+        .map { it?.currency ?: "$" }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = "$"
         )
 
     fun addExpense(amount: Double, category: String, description: String) {

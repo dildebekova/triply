@@ -18,11 +18,13 @@ class TriplyRepository(private val triplyDao: TriplyDao) {
 
     // Schedule
     fun getScheduleStream(tripId: Long): Flow<List<ScheduleItem>> = triplyDao.getScheduleForTrip(tripId)
+    fun getAllScheduleItemsStream(): Flow<List<ScheduleItem>> = triplyDao.getAllScheduleItems()
     suspend fun insertScheduleItem(item: ScheduleItem) = triplyDao.insertScheduleItem(item)
     suspend fun deleteScheduleItem(item: ScheduleItem) = triplyDao.deleteScheduleItem(item)
 
     // Expenses
     fun getExpensesStream(tripId: Long): Flow<List<Expense>> = triplyDao.getExpensesForTrip(tripId)
+    fun getAllExpensesStream(): Flow<List<Expense>> = triplyDao.getAllExpenses()
     suspend fun insertExpense(expense: Expense) = triplyDao.insertExpense(expense)
     suspend fun deleteExpense(expense: Expense) = triplyDao.deleteExpense(expense)
 
@@ -35,4 +37,28 @@ class TriplyRepository(private val triplyDao: TriplyDao) {
     fun getPhotosStream(tripId: Long): Flow<List<Photo>> = triplyDao.getPhotosForTrip(tripId)
     suspend fun insertPhoto(photo: Photo) = triplyDao.insertPhoto(photo)
     suspend fun deletePhoto(photo: Photo) = triplyDao.deletePhoto(photo)
+
+    // Packing Items
+    fun getPackingItemsStream(tripId: Long): Flow<List<PackingItem>> = triplyDao.getPackingItemsForTrip(tripId)
+    suspend fun insertPackingItem(item: PackingItem) = triplyDao.insertPackingItem(item)
+    suspend fun updatePackingItem(item: PackingItem) = triplyDao.updatePackingItem(item)
+    suspend fun deletePackingItem(item: PackingItem) = triplyDao.deletePackingItem(item)
+
+    // Documents
+    fun getDocumentsStream(tripId: Long): Flow<List<Document>> = triplyDao.getDocumentsForTrip(tripId)
+    suspend fun insertDocument(document: Document) = triplyDao.insertDocument(document)
+    suspend fun deleteDocument(document: Document) = triplyDao.deleteDocument(document)
+
+    // User Profile
+    fun getUserStream(): Flow<User?> = triplyDao.getUser()
+    suspend fun insertUser(user: User) = triplyDao.insertUser(user)
+
+    // Clear All App Data
+    suspend fun deleteAllTrips() {
+        triplyDao.deleteAllTrips()
+    }
+
+    suspend fun deleteUser() {
+        triplyDao.deleteUser()
+    }
 }

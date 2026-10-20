@@ -1,7 +1,6 @@
 package com.example.triply.ui.screens
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,15 +16,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.triply.R
 import com.example.triply.TriplyApplication
 import com.example.triply.data.local.Note
+import com.example.triply.ui.components.FeminineTextField
 import com.example.triply.ui.theme.PinkPrimary
 import com.example.triply.ui.theme.PinkSecondary
-import com.example.triply.ui.theme.PinkTertiary
 import com.example.triply.ui.viewmodels.NotesViewModel
 import com.example.triply.ui.viewmodels.NotesViewModelFactory
 import java.text.SimpleDateFormat
@@ -45,14 +46,15 @@ fun NotesScreen(
     var showAddDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier,
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                title = { Text("Trip Notes", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.trip_notes), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = PinkPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), tint = PinkPrimary)
                     }
                 }
             )
@@ -64,14 +66,14 @@ fun NotesScreen(
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Note")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_note))
             }
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
             if (notes.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No notes yet. \uD83D\uDCDD", color = Color.Gray)
+                    Text(stringResource(R.string.no_notes), color = Color.Gray)
                 }
             } else {
                 LazyColumn(
@@ -105,7 +107,7 @@ fun NotesScreen(
 
 @Composable
 fun NoteItem(note: Note, onDelete: () -> Unit) {
-    val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("ru"))
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -124,7 +126,7 @@ fun NoteItem(note: Note, onDelete: () -> Unit) {
                     Text(text = dateFormat.format(Date(note.createdAt)), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                 }
                 IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = PinkSecondary, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = PinkSecondary, modifier = Modifier.size(16.dp))
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -146,13 +148,13 @@ fun AddNoteDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(28.dp),
         containerColor = Color.White,
-        title = { Text("New Note", fontWeight = FontWeight.Bold, color = PinkPrimary) },
+        title = { Text(stringResource(R.string.new_note), fontWeight = FontWeight.Bold, color = PinkPrimary) },
         text = {
             FeminineTextField(
                 value = content,
                 onValueChange = { content = it },
-                label = "Note Content",
-                placeholder = "Write something down...",
+                label = stringResource(R.string.note_content),
+                placeholder = stringResource(R.string.write_something),
                 singleLine = false,
                 minLines = 5
             )
@@ -164,11 +166,11 @@ fun AddNoteDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = PinkPrimary),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Save")
+                Text(stringResource(R.string.save))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel", color = Color.Gray) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = Color.Gray) }
         }
     )
 }

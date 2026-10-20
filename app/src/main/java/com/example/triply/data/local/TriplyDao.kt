@@ -35,6 +35,9 @@ interface TriplyDao {
     @Query("SELECT * FROM schedule_items WHERE tripId = :tripId ORDER BY dateTime ASC")
     fun getScheduleForTrip(tripId: Long): Flow<List<ScheduleItem>>
 
+    @Query("SELECT * FROM schedule_items ORDER BY dateTime ASC")
+    fun getAllScheduleItems(): Flow<List<ScheduleItem>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertScheduleItem(item: ScheduleItem)
 
@@ -44,6 +47,9 @@ interface TriplyDao {
     // Expenses
     @Query("SELECT * FROM expenses WHERE tripId = :tripId ORDER BY date DESC")
     fun getExpensesForTrip(tripId: Long): Flow<List<Expense>>
+
+    @Query("SELECT * FROM expenses")
+    fun getAllExpenses(): Flow<List<Expense>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExpense(expense: Expense)
@@ -70,4 +76,41 @@ interface TriplyDao {
 
     @Delete
     suspend fun deletePhoto(photo: Photo)
+
+    // Packing Items
+    @Query("SELECT * FROM packing_items WHERE tripId = :tripId ORDER BY isChecked ASC, itemName ASC")
+    fun getPackingItemsForTrip(tripId: Long): Flow<List<PackingItem>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPackingItem(item: PackingItem)
+
+    @Update
+    suspend fun updatePackingItem(item: PackingItem)
+
+    @Delete
+    suspend fun deletePackingItem(item: PackingItem)
+
+    // Documents
+    @Query("SELECT * FROM documents WHERE tripId = :tripId")
+    fun getDocumentsForTrip(tripId: Long): Flow<List<Document>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDocument(document: Document)
+
+    @Delete
+    suspend fun deleteDocument(document: Document)
+
+    // User Profile
+    @Query("SELECT * FROM users WHERE id = 1")
+    fun getUser(): Flow<User?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUser(user: User)
+
+    // Методы очистки (используем @Query для надежности)
+    @Query("DELETE FROM trips")
+    suspend fun deleteAllTrips()
+
+    @Query("DELETE FROM users")
+    suspend fun deleteUser()
 }

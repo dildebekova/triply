@@ -12,5 +12,7 @@ data class Trip(
     val startDate: Long,
     val endDate: Long,
     val budget: Double,
-    val description: String
+    val description: String,
+    val category: String = "Vacation",
+    val currency: String = "$" // Новое поле: символ валюты
 )

@@ -1,3 +1,161 @@
 <resources>
     <string name="app_name">Triply</string>
+    <string name="new_adventure">Новое приключение</string>
+    <string name="edit_trip">Редактировать поездку</string>
+    <string name="back">Назад</string>
+    <string name="plan_details">Детали плана</string>
+    <string name="trip_title">Название поездки</string>
+    <string name="trip_title_placeholder">Лето в Париже...</string>
+    <string name="location">Место</string>
+    <string name="location_placeholder">Город, Страна</string>
+    <string name="travel_dates">Даты поездки</string>
+    <string name="budget_label">Бюджет</string>
+    <string name="budget_placeholder">0.00</string>
+    <string name="description">Описание</string>
+    <string name="description_placeholder">Что вы планируете делать?</string>
+    <string name="save_trip">Сохранить поездку</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отмена</string>
+    <string name="trip_expenses">Расходы в поездке</string>
+    <string name="total_spent">Всего потрачено</string>
+    <string name="no_expenses">Расходов пока нет. 💸</string>
+    <string name="add_expense">Добавить расход</string>
+    <string name="amount">Сумма</string>
+    <string name="category">Категория</string>
+    <string name="category_placeholder">Еда, перелет, отель...</string>
+    <string name="note">Заметка</string>
+    <string name="note_placeholder_expense">Обед в кафе</string>
+    <string name="add">Добавить</string>
+    <string name="delete">Удалить</string>
+    <string name="favorite_places">Любимые места</string>
+    <string name="add_place">Добавить место</string>
+    <string name="no_places">Места еще не сохранены. 📍</string>
+    <string name="open_in_maps">Открыть в Картах</string>
+    <string name="save_place">Сохранить место</string>
+    <string name="place_name_placeholder">Эйфелева башня</string>
+    <string name="place_address_placeholder">Марсово поле, Париж</string>
+    <string name="place_note_placeholder">Лучший вид на закате</string>
+    <string name="share_trip_plan">Поделиться планом поездки</string>
+    <string name="local_weather">Погода</string>
+    <string name="loading_forecast">Загрузка прогноза...</string>
+    <string name="current_condition">Текущее состояние</string>
+    <string name="packing_readiness">Готовность к сборам</string>
+    <string name="packed_info">%1$d из %2$d собрано</string>
+    <string name="budget_status">Статус бюджета</string>
+    <string name="expenses">Расходы</string>
+    <string name="remaining">Остаток</string>
+    <string name="trip_planning">Планирование</string>
+    <string name="schedule">Расписание</string>
+    <string name="places">Места</string>
+    <string name="notes">Заметки</string>
+    <string name="packing">Сборы</string>
+    <string name="photos">Фотографии</string>
+    <string name="documents_tickets">Документы и билеты</string>
+    <string name="share_summary_title">🌍 Мой план поездки: %1$s</string>
+    <string name="share_summary_location">📍 Место: %1$s</string>
+    <string name="share_summary_dates">📅 Даты: %1$s - %2$s</string>
+    <string name="share_summary_schedule_header">\n🗓 Расписание:</string>
+    <string name="share_summary_schedule_item">• %1$s: %2$s в %3$s</string>
+    <string name="share_summary_footer">\nСоздано в Triply 🌸</string>
+
+    <!-- Navigation -->
+    <string name="nav_trips">Поездки</string>
+    <string name="nav_calendar">Календарь</string>
+    <string name="nav_stats">Статистика</string>
+    <string name="nav_profile">Профиль</string>
+
+    <!-- MyTripsScreen -->
+    <string name="add_trip">Добавить поездку</string>
+    <string name="empty_trips_hint">Начните свое приключение, нажав +</string>
+    <string name="no_trips_found">Поездок с названием \"%1$s\" не найдено</string>
+    <string name="dream_adventures">Твои приключения мечты</string>
+    <string name="search_trips_placeholder">Поиск поездок...</string>
+
+    <!-- ProfileScreen -->
+    <string name="profile">Профиль</string>
+    <string name="my_statistics">Моя статистика</string>
+    <string name="total_trips">Всего поездок</string>
+    <string name="countries_visited">Стран посещено</string>
+    <string name="total_spent_stat">Потрачено всего</string>
+    <string name="settings">Настройки</string>
+    <string name="notifications">Уведомления</string>
+    <string name="dark_mode">Темная тема</string>
+    <string name="currency">Валюта</string>
+    <string name="language">Язык</string>
+    <string name="about_app">О приложении</string>
+    <string name="logout">Выйти</string>
+    <string name="world_explorer">Исследователь мира</string>
+    <string name="travel_rank">Ранг путешественника</string>
+    <string name="travel_rank_desc">Вы исследовали больше 60%% пользователей в этом месяце! Продолжайте путешествовать, чтобы получать больше значков.</string>
+    <string name="emergency_info">Экстренная информация</string>
+    <string name="emergency_contact">Контакт для связи</string>
+    <string name="medical_notes">Медицинские заметки</string>
+    <string name="emergency_hint">Группа крови, аллергии и др.</string>
+    <string name="data_management">Управление данными</string>
+    <string name="delete_all_data">Удалить все данные</string>
+    <string name="delete_confirm_title">Вы уверены?</string>
+    <string name="delete_confirm_text">Все ваши поездки, расходы и документы будут безвозвратно удалены.</string>
+    <string name="save">Сохранить</string>
+    <string name="appearance">Оформление</string>
+    <string name="theme_system">Система</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="name_label">Имя</string>
+    <string name="bio_label">О себе</string>
+
+    <!-- NotesScreen -->
+    <string name="trip_notes">Заметки о поездке</string>
+    <string name="no_notes">Заметок пока нет. 📝</string>
+    <string name="add_note">Добавить заметку</string>
+    <string name="new_note">Новая заметка</string>
+    <string name="note_content">Содержание заметки</string>
+    <string name="write_something">Напишите что-нибудь...</string>
+
+    <!-- ScheduleScreen -->
+    <string name="trip_schedule">Расписание поездки</string>
+    <string name="no_events">Событий пока нет. 📅</string>
+    <string name="add_event">Добавить событие</string>
+    <string name="event_title">Название события</string>
+    <string name="event_location">Место проведения</string>
+    <string name="event_time">Время события</string>
+    <string name="event_placeholder">Ужин в ресторане</string>
+
+    <!-- PackingListScreen -->
+    <string name="packing_list">Список вещей</string>
+    <string name="add_item">Добавить вещь</string>
+    <string name="item_name">Название вещи</string>
+    <string name="item_placeholder">Паспорт, зарядка...</string>
+    <string name="no_items">Список пуст. 🎒</string>
+    <string name="add_essentials">Добавить важное</string>
+    <string name="suitcase_empty">Ваш чемодан пуст! 🧳</string>
+    <string name="fill_essentials">Заполнить необходимым</string>
+    <string name="item_removed">Вещь удалена</string>
+    <string name="undo">Отменить</string>
+
+    <!-- StatisticsScreen -->
+    <string name="trip_statistics">Статистика поездки</string>
+    <string name="spending_by_category">Расходы по категориям</string>
+    <string name="trip_analytics">Аналитика поездок</string>
+    <string name="no_data">Нет данных для анализа. 📊</string>
+    <string name="total_investment">Всего вложено в воспоминания</string>
+    <string name="categories_count">Категории</string>
+
+    <!-- DocumentsScreen -->
+    <string name="trip_documents">Документы</string>
+    <string name="add_document">Добавить документ</string>
+    <string name="no_documents">Документов пока нет. 📄</string>
+    <string name="document_name">Название документа</string>
+    <string name="document_placeholder">Билет, Бронь отеля...</string>
+    <string name="view_document">Просмотреть</string>
+    <string name="name_your_document">Назовите ваш документ</string>
+
+    <!-- CalendarScreen -->
+    <string name="trip_calendar">Календарь поездки</string>
+    <string name="global_schedule">Общее расписание</string>
+    <string name="no_events_planned">Событий пока нет.</string>
+
+    <!-- PhotosScreen -->
+    <string name="trip_gallery">Галерея поездки</string>
+    <string name="add_photo">Добавить фото</string>
+    <string name="capture_moments">Сохраняйте свои моменты! 🎞️</string>
 </resources>

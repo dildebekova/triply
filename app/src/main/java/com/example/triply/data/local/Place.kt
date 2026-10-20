@@ -23,5 +23,7 @@ data class Place(
     val tripId: Long,
     val name: String,
     val address: String,
-    val description: String
+    val description: String,
+    val latitude: Double? = null,
+    val longitude: Double? = null
 )
